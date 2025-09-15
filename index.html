@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="de" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GamblingZunft</title>
+  <link rel="icon" href="assets/img/logo.svg" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="brand">
+        <img src="assets/img/logo.png" alt="GamingZunft" width="28" height="28" />
+        <h1>GamingZunft</h1>
+        <span class="badge">Casino | Gambling</span>
+      </div>
+      <div class="header-right">
+        <nav class="nav">
+          <a href="#">Home</a>
+          <a href="#replays">Replays</a>
+        </nav>
+        <button id="themeToggle" class="theme-toggle" aria-pressed="false" title="Zum Light Mode wechseln">🌙</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <h2>Replays, Top-Gewinne & Gewinn-X</h2>
+      <p>Eine schlichte Übersicht über unsere besten Momente. Klick auf ein Thumbnail, um das Replay auf YouTube oder direkt im Slot-Replay zu sehen.</p>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="label">Gesamte Gewinne</div>
+          <div id="totalWinnings" class="value">—</div>
+        </div>
+        <div class="stat">
+          <div class="label">Anzahl Replays</div>
+          <div id="totalReplays" class="value">—</div>
+        </div>
+      </div>
+
+      <div id="stats" class="kpis">
+        <div class="kpi">
+          <div class="title">Höchster Einzelgewinn</div>
+          <div id="bestWin" class="num">—</div>
+        </div>
+        <div class="kpi">
+          <div class="title">Höchster Gewinn-X</div>
+          <div id="bestMulti" class="num">—</div>
+        </div>
+      </div>
+
+      <section class="pinnwand">
+        <div class="pheader">Spieler</div>
+        <section id="playerGrid" class="grid players"></section>
+      </section>
+    </section>
+
+    <!-- Eigener Container für Replay-Filter -->
+    <section class="replay-controls" aria-label="Replay-Filter">
+      <div class="controls-inner">
+        <input id="search" class="input" placeholder="Suche nach Spiel, Provider, Titel, Tag …" />
+        <select id="sort" class="select">
+          <option value="newest">Neueste zuerst</option>
+          <option value="oldest">Älteste zuerst</option>
+          <option value="highest-x">Höchste Gewinn-X</option>
+          <option value="biggest-win">Höchste Gewinne</option>
+          <option value="maxwin">Nur MAXWINs</option>
+        </select>
+      </div>
+    </section>
+
+    <section id="replays" class="grid"></section>
+
+    <footer class="footer">
+      <small class="muted">© <span id="year"></span> GamingZunft</small>
+    </footer>
+  </div>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script src="assets/js/app.js"></script>
+
+  <!-- … -->
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script src="assets/js/badges.js"></script>
+  <script src="assets/js/app.js"></script>
+
+    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script src="assets/js/badges.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
+
+
+</body>
+</html>
+
+
+</body>
+</html>

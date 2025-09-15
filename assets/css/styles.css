@@ -1,0 +1,438 @@
+/* =========================
+   GamingZunft Styles (Dark/Light + MAXWIN + Spieler-Karten)
+   ========================= */
+
+html { scroll-behavior: smooth; }
+
+/* ---- Theme Vars (Dark default) ---- */
+:root{
+  --bg:#0b0f16;
+  --panel:#121826;
+  --muted:#94a3b8;
+  --text:#e5e7eb;
+  --brand:#7c3aed;
+  --brand-2:#06b6d4;
+  --ring:#2a3650;
+}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+*{box-sizing:border-box}
+a{color:inherit;text-decoration:none}
+
+/* ---- Header / Nav ---- */
+.container{max-width:1200px;margin:0 auto;padding:28px}
+.header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0}
+.header-right{display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand h1{font-size:22px;margin:0;font-weight:900;letter-spacing:.2px}
+.badge{font-size:12px;color:#a5b4fc;background:rgba(124,58,237,.18);padding:4px 8px;border-radius:6px;border:1px solid rgba(124,58,237,.3)}
+.nav{display:flex;gap:12px;flex-wrap:wrap}
+.nav a{padding:8px 12px;border-radius:999px;background:linear-gradient(135deg, rgba(124,58,237,.15), rgba(6,182,212,.15));}
+
+/* ---- Theme Toggle ---- */
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:999px;border:1px solid var(--ring);background:#0f172a;color:#e5e7eb;cursor:pointer}
+[data-theme="light"] .theme-toggle{ background:#fff; color:#0f172a }
+
+/* ---- Hero & KPIs ---- */
+.hero{
+  background:radial-gradient(1200px 400px at 50% -10%, rgba(124,58,237,.35), transparent),
+             radial-gradient(1000px 400px at 80% 0%, rgba(6,182,212,.25), transparent);
+  border-radius:20px;padding:34px;border:1px solid #202a3b;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.03);
+  margin-bottom: 28px; /* Luft über dem Replays-Grid */
+}
+.hero h2{margin:0 0 6px}
+.hero p{margin:0 0 10px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:12px}
+.stat{background:var(--panel);border:1px solid #1f2937;padding:16px;border-radius:14px}
+.stat .label{color:var(--muted);font-size:12px}
+.stat .value{font-size:22px;font-weight:800;margin-top:4px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:16px}
+.kpi{background:linear-gradient(135deg, rgba(124,58,237,.1), rgba(6,182,212,.1));border:1px solid #1f2937;padding:16px;border-radius:16px}
+.kpi .title{font-size:12.5px}
+.kpi .num{font-size:28px;font-weight:900;margin-top:6px}
+
+/* ---- Controls ---- */
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.input{flex:1;min-width:220px;background:#0f172a;border:1px solid var(--ring);border-radius:12px;padding:10px 12px;color:var(--text)}
+.select{background:#0f172a;border:1px solid var(--ring);border-radius:12px;padding:10px 12px;color:var(--text)}
+
+/* ---- Grid & Cards ---- */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;align-items:stretch}
+.card{background:var(--panel);border:1px solid #1e293b;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;height:100%;
+  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease}
+.card:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.35);border-color:#273449}
+.thumb{width:100%;aspect-ratio:180/236;object-fit:cover;background:#0f172a;border-bottom:1px solid rgba(255,255,255,.04)}
+.content.vstack{display:flex;flex-direction:column;gap:8px;flex:1;padding:12px 14px}
+.title{font-size:18px;font-weight:800;line-height:1.25;margin-bottom:4px}
+.clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.6em}
+.meta{font-size:12.5px;opacity:.9}
+.stick-bottom{margin-top:auto;padding-top:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;width:100%;
+  border-radius:12px;padding:12px;border:1px solid var(--ring);
+  background:linear-gradient(135deg, rgba(124,58,237,.20), rgba(6,182,212,.18));
+  color:var(--text);font-weight:700;transition:filter .15s ease, transform .15s ease, box-shadow .15s ease}
+.btn:hover{filter:brightness(1.05);transform:translateY(-1px);box-shadow:0 10px 24px rgba(0,0,0,.25)}
+.footer{margin:36px 0 10px;color:var(--muted);font-size:12px}
+
+/* ---- Light Mode ---- */
+[data-theme="light"]{ --bg:#f8fafc; --panel:#ffffff; --text:#0f172a; --muted:#475569; --ring:#e5e7eb; }
+[data-theme="light"] .card{ border-color:#e5e7eb; background:linear-gradient(180deg,#fff, #fafafa) }
+[data-theme="light"] .thumb{ border-bottom-color:#eef2f7 }
+[data-theme="light"] .btn{ border-color:#e5e7eb; color:#0f172a; background:linear-gradient(135deg, rgba(124,58,237,.12), rgba(6,182,212,.10)) }
+[data-theme="light"] .input, [data-theme="light"] .select{ background:#ffffff; color:#0f172a; border-color:#e5e7eb }
+[data-theme="light"] .hero{ border-color:#e5e7eb; box-shadow:0 8px 24px rgba(15,23,42,.06), inset 0 1px 0 rgba(255,255,255,.6) }
+
+/* ---- MAXWIN: goldener Kartenrahmen + Gold-Box mit Betrag ---- */
+.card.maxwin{
+  border: 2px solid transparent;
+  border-radius: 16px;
+  background:
+    linear-gradient(var(--panel), var(--panel)) padding-box,
+    linear-gradient(135deg, #facc15, #f59e0b, #facc15) border-box;
+  box-shadow: 0 0 0 1px rgba(250, 204, 21, .25), 0 10px 28px rgba(250, 204, 21, .10);
+}
+[data-theme="light"] .card.maxwin{
+  box-shadow: 0 0 0 1px rgba(250, 204, 21, .35), 0 10px 28px rgba(250, 204, 21, .12);
+}
+.mw-badge{
+  align-self:stretch; display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:8px 12px; border-radius:12px;
+  background:linear-gradient(135deg,#fde047,#f59e0b);
+  color:#0b0f16; font-weight:800; margin-bottom:6px; box-shadow:0 2px 8px rgba(0,0,0,.18);
+}
+.mw-badge .mw-label{ letter-spacing:.6px }
+.mw-badge .mw-amount{ font-weight:900 }
+
+/* ---- Achievement-Badges & Tooltip ---- */
+.ach{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:999px;font-size:13px;line-height:1;border:1px solid #2a3650;background:#0f172a}
+[data-theme="light"] .ach{ background:#fff; border-color:#e5e7eb }
+.ach.a1{ background:linear-gradient(180deg, rgba(251,191,36,.18), rgba(251,191,36,.08)); }
+.ach.a2{ background:linear-gradient(180deg, rgba(59,130,246,.18), rgba(59,130,246,.08)); }
+.ach.a3{ background:linear-gradient(180deg, rgba(168,85,247,.18), rgba(168,85,247,.08)); }
+.ach.a4{ background:linear-gradient(180deg, rgba(234,179,8,.25), rgba(234,179,8,.12)); }
+.ach.a5{ background: linear-gradient(180deg, rgba(34,197,94,.18), rgba(34,197,94,.08)); }   /* Newcomer */
+.ach.a6{ background: linear-gradient(180deg, rgba(148,163,184,.22), rgba(148,163,184,.10)); } /* Veteran */
+
+.ach.gzb-zuschauer  { background: linear-gradient(180deg, rgba(148,163,184,.22), rgba(148,163,184,.10)); } /* neutral-grau */
+.ach.gzb-addict     { background: linear-gradient(180deg, rgba(219, 129, 11, 0.22), rgba(148,163,184,.10)); } /* rot-tint */
+.ach.gzb-degenerate { background: linear-gradient(180deg, rgba(204, 8, 8, 0.22), rgba(223, 24, 9, 0.1)); }  /* gold-tint */
+.ach.gzb-bewusster  { background: linear-gradient(180deg, rgba(192, 11, 102, 0.22), rgba(148,163,184,.10)); } /* grün-tint */
+
+
+.ach[data-tip]{ position:relative }
+.ach[data-tip]::after{
+  content: attr(data-tip);
+  position:absolute; bottom: calc(100% + 8px); left:50%; transform: translateX(-50%);
+  background: rgba(15,23,42,.96); color:var(--text); border:1px solid rgba(148,163,184,.45);
+  padding:8px 10px; border-radius:10px; font-size:12.5px; white-space:nowrap;
+  box-shadow:0 10px 28px rgba(0,0,0,.35); opacity:0; pointer-events:none; transition:opacity .12s;
+  z-index:1000;
+}
+.ach[data-tip]::before{
+  content:''; position:absolute; bottom:100%; left:50%; transform:translateX(-50%);
+  border:6px solid transparent; border-top-color: rgba(148,163,184,.45); opacity:0; transition:opacity .12s; z-index:1000;
+}
+.ach[data-tip]:hover::after, .ach[data-tip]:hover::before{ opacity:1 }
+
+/* ===== Spieler-Karten ===== */
+.pinnwand{ margin-top:14px; background:var(--panel); border:1px solid #1f2937; border-radius:14px; padding:12px 14px }
+.pinnwand .pheader{ font-weight:800; font-size:13px; letter-spacing:.2px; color:var(--muted); margin-bottom:10px }
+.grid.players{ align-items:stretch }
+.card.player-card{ display:flex; flex-direction:column; height:100% }
+/* Avatar im Thumb-Bereich */
+.player-thumb{
+  width:100%; aspect-ratio:180/236;
+  display:flex; align-items:center; justify-content:center;
+  background:#0f172a; border-bottom:1px solid rgba(255,255,255,.04);
+}
+[data-theme="light"] .player-thumb{ background:#f3f4f6; border-bottom-color:#eef2f7 }
+.player-avatar{
+  width:84px; height:84px; border-radius:50%; overflow:hidden; border:2px solid rgba(255,255,255,.15);
+  box-shadow:0 6px 18px rgba(0,0,0,.25);
+}
+.player-avatar img{ width:100%; height:100%; object-fit:cover; display:block }
+.player-avatar.initials{ display:flex; align-items:center; justify-content:center; font-weight:900; font-size:28px; color:#e5e7eb; background:linear-gradient(135deg,#334155,#0f172a) }
+[data-theme="light"] .player-avatar.initials{ color:#0f172a; background:linear-gradient(135deg,#e5e7eb,#ffffff) }
+/* Inhalt & Gesamtgewinn unten pinnen */
+.player-card .content.vstack{ gap:10px; display:flex; flex-direction:column; flex:1 }
+.player-card .title{ font-size:18px; font-weight:800; margin:0 }
+.badges-row{ display:flex; gap:6px; flex-wrap:wrap }
+.total.pill{
+  align-self:flex-start;
+  padding:4px 8px;
+  border-radius:999px;
+  border:1px solid var(--ring);
+  background:#0f172a;
+  font-weight:700;
+  font-size:12.5px;
+  margin-top:auto; /* immer unten */
+}
+[data-theme="light"] .total.pill{ background:#fff; }
+
+/* Karten sollen Tooltips nicht clippen */
+.card, .card.player-card{ overflow:visible; position:relative }
+
+/* === Theme Wipe Overlay === */
+.theme-wipe{
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  transform: translateX(0);
+  will-change: transform;
+}
+.theme-wipe.wipe-right.animate{ transform: translateX(100%); }
+.theme-wipe.wipe-left.animate { transform: translateX(-100%); }
+.theme-wipe.animate{
+  transition: transform 600ms cubic-bezier(.22,.61,.36,1);
+}
+.theme-wipe::after{
+  content:""; position:absolute; inset:0;
+  background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,.12) 50%, transparent 100%);
+  mix-blend-mode: soft-light;
+}
+
+/* weiche Übergänge bei Flächen/Texten */
+body, .card, .hero, .stat, .kpi, .btn, .input, .select, .pinnwand, .player-thumb{
+  transition: background-color .25s ease, color .25s ease, border-color .25s ease;
+}
+
+.grid.players{ grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.card.player-card .player-thumb{ aspect-ratio: 180 / 100; }
+.card.player-card .player-avatar{ width: 48px; height: 48px; }
+.card.player-card .title{ font-size: 14px; }
+.badges-row .ach{ width: 20px; height: 20px; font-size: 11px; }
+
+/* ===== Replay-Controls: eigener Container ===== */
+.replay-controls{
+  margin: 8px 0 18px;        /* Abstand um den Container */
+}
+.replay-controls .controls-inner{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 12px;
+  border: 1px solid #1f2937;
+  border-radius: 14px;
+  background: var(--panel);
+  box-shadow: 0 6px 16px rgba(0,0,0,.15);
+}
+[data-theme="light"] .replay-controls .controls-inner{
+  border-color: #e5e7eb;
+  box-shadow: 0 6px 16px rgba(15,23,42,.06);
+}
+
+/* Inputs darin wie gewohnt */
+.replay-controls .input{
+  flex: 1 1 320px;   /* wächst, min Breite */
+}
+.replay-controls .select{
+  flex: 0 0 220px;   /* feste Breite für das Dropdown */
+}
+
+/* optional: sticky beim Scrollen
+.replay-controls{
+  position: sticky; top: 8px; z-index: 50;
+}
+*/
+
+/* KPI-Boxen: Wert oben, Chips darunter */
+.kpi .num{
+  display:flex;
+  flex-direction:column;
+  gap:10px;               /* Abstand zwischen Wert und Chips */
+}
+
+/* große Zahl oben */
+.kpi-amount{
+  font-size:28px;
+  font-weight:900;
+  line-height:1.15;
+}
+
+/* Chip-Reihe */
+.kpi-meta{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+/* einzelne Chips */
+.kpi-meta .chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:4px 10px;
+  border-radius:999px;
+  border:1px solid var(--ring);
+  background: var(--panel);
+  font-weight:700;
+  font-size:12.5px;
+}
+[data-theme="light"] .kpi-meta .chip{
+  background:#fff;
+  border-color:#e5e7eb;
+}
+
+/* optionale Farbakzente */
+.kpi-meta .chip-game  { }
+.kpi-meta .chip-user  { }
+
+/* ===== Replays kompakter + 4 Spalten am Desktop ===== */
+
+/* Grid enger und mit kleinerer Mindestbreite */
+#replays{
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+/* Harte 4er-Reihe ab 1200px Breite (optional, sorgt für saubere 4 Spalten) */
+@media (min-width: 1200px){
+  #replays{ grid-template-columns: repeat(4, 1fr); }
+}
+/* sinnvolle Breakpoints darunter */
+@media (max-width: 1024px){
+  #replays{ grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 720px){
+  #replays{ grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px){
+  #replays{ grid-template-columns: 1fr; }
+}
+
+/* Karten-Inhalt etwas kompakter */
+#replays .content.vstack{
+  padding: 10px 12px;
+  gap: 6px;
+}
+#replays .title{ font-size: 16px; }
+#replays .meta{ font-size: 12px; }
+
+/* Button kompakter */
+#replays .btn{ padding: 10px; }
+
+/* Thumbnail etwas flacher, damit die Karte in der Höhe schlanker wirkt */
+#replays .thumb{ aspect-ratio: 180 / 220; }  /* vorher ca. 180 / 236 */
+
+/* ===== Smoother Hovers & Focus ===== */
+:root{
+  --ease-smooth: cubic-bezier(.22,.61,.36,1);
+  --t-fast: 160ms;
+  --t-med: 260ms;
+}
+
+/* Karten: weiche Bewegung + kein Layout-Shift */
+.card{
+  will-change: transform, box-shadow;
+  transform: translateZ(0); /* GPU hint */
+  transition:
+    transform var(--t-med) var(--ease-smooth),
+    box-shadow var(--t-med) var(--ease-smooth),
+    border-color var(--t-med) var(--ease-smooth),
+    background-color var(--t-med) var(--ease-smooth);
+}
+.card:hover{
+  transform: translateY(-4px); /* kleiner & weicher */
+  box-shadow: 0 14px 36px rgba(0,0,0,.32);
+}
+
+/* Thumbnails leicht zoomen statt hart stehen */
+#replays .thumb, .player-thumb{
+  transition:
+    transform var(--t-med) var(--ease-smooth),
+    filter var(--t-med) var(--ease-smooth);
+}
+.card:hover .thumb,
+.card.player-card:hover .player-thumb{
+  transform: scale(1.02);
+}
+
+/* Buttons angenehmer */
+.btn{
+  transition:
+    background-color var(--t-fast) var(--ease-smooth),
+    box-shadow var(--t-fast) var(--ease-smooth),
+    transform var(--t-fast) var(--ease-smooth),
+    filter var(--t-fast) var(--ease-smooth);
+}
+.btn:hover{
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+/* Inputs, Selects, Toggle, Nav – keine harten Color-Jumps */
+.input, .select, .theme-toggle, .nav a, .kpi, .stat, .pinnwand{
+  transition:
+    background-color var(--t-fast) var(--ease-smooth),
+    color var(--t-fast) var(--ease-smooth),
+    border-color var(--t-fast) var(--ease-smooth),
+    box-shadow var(--t-fast) var(--ease-smooth);
+}
+
+/* Tooltips bleiben smooth (bereits opacity-transition vorhanden) */
+.ach[data-tip]::after, .ach[data-tip]::before{
+  transition: opacity 140ms var(--ease-smooth);
+}
+
+/* Optional: reduzierte Bewegung respektieren */
+@media (prefers-reduced-motion: reduce){
+  *{ transition: none !important; animation: none !important; }
+}
+
+.avatar-link{ text-decoration:none; color:inherit; }
+.avatar-link:hover{ filter: brightness(1.06); }
+
+/* ===== Player-Seite: Replays kompakt + 4 Spalten wie Startseite ===== */
+#playerReplays{
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+/* Feste 4er-Reihe am Desktop */
+@media (min-width: 1200px){
+  #playerReplays{ grid-template-columns: repeat(4, 1fr); }
+}
+/* sinnvolle Breakpoints darunter */
+@media (max-width: 1024px){
+  #playerReplays{ grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 720px){
+  #playerReplays{ grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px){
+  #playerReplays{ grid-template-columns: 1fr; }
+}
+
+/* gleiche kompakte Kartengröße wie unten auf der Startseite */
+#playerReplays .content.vstack{ padding: 10px 12px; gap: 6px; }
+#playerReplays .title{ font-size: 16px; }
+#playerReplays .meta{ font-size: 12px; }
+#playerReplays .btn{ padding: 10px; }
+/* flacheres Thumbnail, damit die Karte insgesamt kleiner bleibt */
+#playerReplays .thumb{ aspect-ratio: 180 / 220; }
+
+/* Karten oben wie unten abrunden und Inhalte clippen */
+#replays .card,
+#playerReplays .card{
+  border-radius: 16px;
+  overflow: hidden;                /* <— wichtig: schneidet Bild/Badge sauber ab */
+}
+
+/* Thumbnail respektiert die Rundung */
+#replays .card .thumb,
+#playerReplays .card .thumb{
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+}
+
+/* MAXWIN-Leiste selbst auch leicht runden (falls sie randlos anliegt) */
+.mw-badge{
+  border-radius: 10px;
+  overflow: hidden;
+}
+

@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="de" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spielerprofil – GamingZunft</title>
+  <link rel="icon" href="assets/img/logo.svg" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    /* --- Profil-Layout --- */
+    .profile-header{
+      margin:22px 0 14px; padding:16px; border:1px solid var(--ring); border-radius:16px;
+      background:var(--panel); display:flex; gap:14px; align-items:center
+    }
+    .profile-header .avatar{
+      width:72px; height:72px; border-radius:50%; overflow:hidden;
+      border:2px solid rgba(255,255,255,.15);
+      display:flex; align-items:center; justify-content:center; font-weight:900; font-size:28px
+    }
+    .profile-header .avatar img{ width:100%; height:100%; object-fit:cover }
+    .profile-header h2{ margin:0 0 6px }
+
+    .profile-kpis{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px }
+    .profile-kpi{ background:var(--panel); border:1px solid var(--ring); border-radius:12px; padding:12px }
+    .profile-kpi .label{ font-size:12px; color:var(--muted) }
+    .profile-kpi .value{ font-size:20px; font-weight:800; margin-top:4px }
+
+    /* KPI im Profil: Wert + Chips (wie Startseite) */
+    .profile-kpi .value{
+      display:flex; flex-direction:column; gap:10px;
+    }
+    .profile-kpi .value .kpi-amount{
+      font-size:22px; font-weight:900; line-height:1.15;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="brand">
+        <img src="assets/img/logo.svg" alt="GamingZunft" width="120" height="28" />
+        <h1>GamingZunft</h1>
+        <span class="badge">Profil</span>
+      </div>
+      <div class="header-right">
+        <a class="nav" href="index.html"><span class="btn" style="padding:8px 12px">← Zurück</span></a>
+      </div>
+    </header>
+
+    <section id="profile" class="profile-header">
+      <div class="avatar" id="pAvatar">?</div>
+      <div class="info">
+        <h2 id="pName">Spieler</h2>
+        <div class="badges-row" id="pBadges"></div>
+      </div>
+    </section>
+
+    <section class="profile-kpis">
+      <div class="profile-kpi">
+        <div class="label">Gesamtgewinn</div>
+        <div class="value" id="pTotal">—</div>
+      </div>
+      <div class="profile-kpi">
+        <div class="label">Replays (mit URL)</div>
+        <div class="value" id="pReplays">—</div>
+      </div>
+      <div class="profile-kpi">
+        <div class="label">Bester Gewinn</div>
+        <div class="value" id="pBestWin">—</div>
+      </div>
+      <div class="profile-kpi">
+        <div class="label">Bester Multiplikator</div>
+        <div class="value" id="pBestX">—</div>
+      </div>
+    </section>
+
+    <!-- REPLAY-CONTROLS (Profil) -->
+    <section class="replay-controls" aria-label="Replay-Filter (Profil)">
+      <div class="controls-inner">
+        <input id="pSearch" class="input" placeholder="Suche nach Spiel, Provider, Titel, Tag …" />
+        <select id="pSort" class="select">
+          <option value="newest">Neueste zuerst</option>
+          <option value="oldest">Älteste zuerst</option>
+          <option value="highest-x">Höchste Multiplikatoren</option>
+          <option value="biggest-win">Größte Geldgewinne</option>
+        </select>
+        <label class="select" style="display:flex;align-items:center;gap:8px;padding-inline:12px;">
+          <input id="pOnlyMaxwin" type="checkbox" />
+          Nur MAXWINs
+        </label>
+      </div>
+    </section>
+
+    <h3 style="margin:22px 0 10px">Replays von <span id="pName2">Spieler</span></h3>
+    <section id="playerReplays" class="grid"></section>
+
+    <footer class="footer">
+      <small class="muted">© <span id="year"></span> GamingZunft</small>
+    </footer>
+  </div>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+
+    <script src="assets/js/badges.js"></script>
+
+
+  <!-- ===== Inline Player-Logic (kein externes JS nötig) ===== -->
+  <script>
+    const CSV_PATH = 'data/replays.csv';
+    const LOCALE = 'de-AT';
+    const NEWCOMERS = new Set(['Domi']);
+    const VETERANS  = new Set(['Planki', 'Robin', 'Jonas', 'Eltschgo', 'Leks', 'Moses', 'Fabi']);
+    const PLAYER_AVATARS = { /* 'Moses':'assets/img/players/moses.jpg' */ };
+
+    
+
+    const q = s => document.querySelector(s);
+    const cur = n => { n=Number(n)||0; try{return n.toLocaleString(LOCALE,{style:'currency',currency:'EUR',maximumFractionDigits:2});}catch{return `${n.toFixed(2).replace('.',',')} €`;} };
+    const d   = s => { try{return new Date(s).toLocaleDateString(LOCALE,{day:'2-digit',month:'2-digit',year:'numeric'});}catch{return s||'—';} };
+
+    function detectDelimiter(l){ return ((l.match(/;/g)||[]).length > (l.match(/,/g)||[]).length) ? ';' : ','; }
+    function parseCSV(str,delim=','){ const rows=[]; let i=0,f='',qot=false,row=[]; while(i<str.length){const c=str[i++]; if(qot){ if(c=='"'){ if(str[i]=='"'){f+='"';i++;} else qot=false;} else f+=c;} else { if(c=='"')qot=true; else if(c==delim){row.push(f);f='';} else if(c=='\n'){row.push(f);rows.push(row);f='';row=[];} else if(c!='\r'){f+=c;} } } if(f.length||row.length){row.push(f);rows.push(row);} return rows;}
+    function nnum(v){ if(v==null) return 0; let s=String(v).trim().replace(/[€$£\s]/g,''); const c=s.includes(','), p=s.includes('.'); if(c&&p){const lc=s.lastIndexOf(','), lp=s.lastIndexOf('.'); const dec=lc>lp?',':'.', thou=dec==','?'.':','; s=s.replace(new RegExp('\\'+thou,'g'),'').replace(dec,'.');} else if(c){ s=s.replace(/\./g,'').replace(',', '.'); } else { s=s.replace(/,/g,''); } const n=Number(s); return isNaN(n)?0:n; }
+    function ndt(v){ if(!v) return ''; const s=String(v).trim(); const m=s.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/); if(m){const[,dd,mm,yy]=m; return `${yy}-${String(mm).padStart(2,'0')}-${String(dd).padStart(2,'0')}`;} return s; }
+    function guessThumb(g){ const k=(g||'').toLowerCase(); const map={'gates of olympus':'assets/img/gates_of_olympus.svg','wanted dead or a wild':'assets/img/wanted_dead_or_a_wild.svg','sweet bonanza':'assets/img/sweet_bonanza.svg'}; return map[k] || 'assets/img/gates_of_olympus.svg'; }
+
+    function csvToItems(txt){
+      const first=(txt.split(/\r?\n/)[0]||''); const dlm=detectDelimiter(first);
+      const rows=parseCSV(txt,dlm); if(!rows.length) return [];
+      const hdr=rows.shift().map(h=>String(h).trim().toLowerCase());
+      const idx = n => hdr.indexOf(String(n).toLowerCase());
+      const get=(r,n,...a)=>{const i=[n,...a].map(idx).find(i=>i>=0); return i>=0 ? (r[i]||'') : '';};
+      return rows.filter(r=>r && r.some(x=>String(x).trim()!=='')).map(r=>{
+        const game=get(r,'game'); const x=nnum(get(r,'x')); const url=get(r,'videourl','videoUrl');
+        const uThumb=get(r,'thumb','thumbnail','image','img'); const thumb=uThumb && String(uThumb).trim()?uThumb.trim():guessThumb(game);
+        const tags=String(get(r,'tags')||'').split(/[,;]\s*/).filter(Boolean);
+        const title=`${game}${x?(' '+x+'x'):''}`.trim();
+        const isMaxWin=tags.map(t=>t.toLowerCase()).includes('maxwin') || /max\s*win/i.test(title) || /max\s*win/i.test(String(game));
+        return { title, provider:get(r,'provider'), game, player:get(r,'player','palyer'),
+          date:ndt(get(r,'date')), bet:nnum(get(r,'bet')), win:nnum(get(r,'win')),
+          x, videoUrl:url, thumb, tags, isMaxWin };
+      });
+    }
+
+    function replayCard(r){
+      const xTxt=r.x?`${r.x}x`:'—', wTxt=r.win!=null?cur(r.win):'—', dt=r.date?d(r.date):'—', img=r.thumb||'assets/img/gates_of_olympus.svg';
+      const top=r.isMaxWin?`<div class="mw-badge"><span class="mw-label">MAX&nbsp;WIN</span><span class="mw-amount">🪙 ${wTxt}</span></div>`:`<h3 class="title clamp-2">🪙 ${wTxt}</h3>`;
+      return `<div class="card ${r.isMaxWin?'maxwin':''}">
+        <img class="thumb" src="${img}" alt="Thumbnail">
+        <div class="content vstack">
+          ${top}
+          <div class="line meta">🎮 ${r.game||r.title||'—'}</div>
+          <div class="line meta">🏷️ ${r.provider||'—'}</div>
+          <div class="line meta">⚡ ${xTxt}</div>
+          <div class="line meta">📅 ${dt}</div>
+          <div class="line meta">👤 ${r.player||'—'}</div>
+          ${r.videoUrl?`<div class="cta stick-bottom"><a class="btn" href="${r.videoUrl}" target="_blank" rel="noopener">Replay ansehen ↗</a></div>`:''}
+        </div></div>`;
+    }
+
+    (async function init(){
+      // Name aus URL
+      let name = new URLSearchParams(location.search).get('player') || new URLSearchParams(location.search).get('name') || '';
+      name = decodeURIComponent(name.replace(/\+/g,' ')).trim();
+      if(!name) name = 'Unbekannt';
+      q('#pName').textContent = name;
+      q('#pName2').textContent = name;
+
+      // Avatar
+      const av = PLAYER_AVATARS[name];
+      if (av) q('#pAvatar').innerHTML = `<img src="${av}" alt="${name}">`;
+      else    q('#pAvatar').textContent = (name[0]||'?').toUpperCase();
+
+      // CSV laden
+      let txt='';
+      try{
+        const res = await fetch(CSV_PATH, { cache:'no-store' });
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        txt = await res.text();
+      }catch(e){
+        console.error('CSV load error:', e);
+        q('#playerReplays').innerHTML = `<div class="muted">CSV konnte nicht geladen werden (läuft Live Server?).</div>`;
+        return;
+      }
+
+      // Daten filtern
+      const items = csvToItems(txt);
+      const all   = items.filter(i => (i.player||'').trim().toLowerCase() === name.toLowerCase());
+      const withU = all.filter(i => String(i.videoUrl||'').trim());
+
+      // Badges (unter dem Namen)
+      const total = all.reduce((s,i)=>s+(Number(i.win)||0),0);
+      const maxwin = all.some(i=>i.isMaxWin);
+      const chips=[];
+      if (total>=10000)  chips.push(`<span class="ach a1" data-tip="≥ 10.000 € Gesamtgewinn">🥉</span>`);
+      if (total>=50000)  chips.push(`<span class="ach a2" data-tip="≥ 50.000 € Gesamtgewinn">🥈</span>`);
+      if (total>=100000) chips.push(`<span class="ach a3" data-tip="≥ 100.000 € Gesamtgewinn">🥇</span>`);
+      if (maxwin)        chips.push(`<span class="ach a4" data-tip="Mindestens ein MAXWIN">👑</span>`);
+      if (NEWCOMERS.has(name)) chips.push(`<span class="ach a5" data-tip="Newcomer">🆕</span>`);
+      if (VETERANS.has(name))  chips.push(`<span class="ach a6" data-tip="Veteran">🛡️</span>`);
+      
+
+
+
+      q('#pBadges').innerHTML = chips.join('');
+
+      // manuelle Badges aus zentraler Konfig
+const manualKeys = (window.GZ_BADGES?.players?.[name]) || [];
+for (const key of manualKeys){
+  const def = window.GZ_BADGES?.defs?.[key];
+  if (def) chips.push(`<span class="ach gzb-${key}" data-tip="${def.tip}">${def.icon}</span>`);
+}
+
+      // KPIs (mit Chips unter dem Wert)
+      const bestW = all.reduce((a,b)=> (a.win||0) > (b.win||0) ? a : b, {}) || {};
+      const bestX = all.reduce((a,b)=> (a.x||0)   > (b.x||0)   ? a : b, {}) || {};
+      q('#pTotal').textContent   = cur(total);
+      q('#pReplays').textContent = String(withU.length);
+
+      if (bestW.win){
+        q('#pBestWin').innerHTML = `
+          <div class="kpi-amount">${cur(bestW.win)}</div>
+          <div class="kpi-meta">
+            <span class="chip chip-game">🎮 ${bestW.game || '—'}</span>
+
+          </div>`;
+      } else q('#pBestWin').textContent = '—';
+
+      if (bestX.x){
+        q('#pBestX').innerHTML = `
+          <div class="kpi-amount">${bestX.x}x</div>
+          <div class="kpi-meta">
+            <span class="chip chip-game">🎮 ${bestX.game || '—'}</span>
+
+          </div>`;
+      } else q('#pBestX').textContent = '—';
+
+      /* --- Filterbarer Replay-View auf Profilseite --- */
+      const stateP = { base: withU, filtered: [], sort: 'newest', query: '', onlyMax: false };
+
+      function pRender(){
+        const grid = q('#playerReplays');
+        if (!stateP.filtered.length){
+          grid.innerHTML = `<div class="muted">Keine Replays passend zum Filter.</div>`;
+          return;
+        }
+        grid.innerHTML = stateP.filtered.map(replayCard).join('');
+      }
+      function pApplyFilters(){
+        const qstr = stateP.query.trim().toLowerCase();
+        let arr = [...stateP.base];
+        if (qstr){
+          arr = arr.filter(r =>
+            (r.title||'').toLowerCase().includes(qstr) ||
+            (r.game||'').toLowerCase().includes(qstr) ||
+            (r.provider||'').toLowerCase().includes(qstr) ||
+            (r.tags||[]).join(' ').toLowerCase().includes(qstr)
+          );
+        }
+        if (stateP.onlyMax) arr = arr.filter(r => r.isMaxWin);
+        switch(stateP.sort){
+          case 'newest':      arr.sort((a,b)=> new Date(b.date) - new Date(a.date)); break;
+          case 'oldest':      arr.sort((a,b)=> new Date(a.date) - new Date(b.date)); break;
+          case 'highest-x':   arr.sort((a,b)=> (b.x||0)  - (a.x||0));  break;
+          case 'biggest-win': arr.sort((a,b)=> (b.win||0)- (a.win||0));break;
+        }
+        stateP.filtered = arr;
+        pRender();
+      }
+
+      // Controls verdrahten
+      const pSearch = q('#pSearch');
+      const pSort   = q('#pSort');
+      const pMax    = q('#pOnlyMaxwin');
+      if (pSearch) pSearch.addEventListener('input',  e => { stateP.query   = e.target.value; pApplyFilters(); });
+      if (pSort)   pSort  .addEventListener('change', e => { stateP.sort    = e.target.value; pApplyFilters(); });
+      if (pMax)    pMax   .addEventListener('change', e => { stateP.onlyMax = e.target.checked; pApplyFilters(); });
+
+      // Initial render
+      pApplyFilters();
+
+      // Hinweis, wenn gar keine Daten für den Spieler
+      if (all.length===0){
+        q('#playerReplays').innerHTML = `<div class="muted">Für "${name}" wurden keine Einträge gefunden.</div>`;
+      }
+    })();
+  </script>
+</body>
+</html>
